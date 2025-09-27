@@ -45,4 +45,4 @@ terraform.tfplan
 
 # Cost reports and exports
 cost-reports/
-billing-data/
+billing-data/models/
