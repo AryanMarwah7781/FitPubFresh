@@ -1,0 +1,48 @@
+# Sensitive files and directories
+*.pem
+*.key
+kubeconfig*
+.kube/
+.aws/credentials
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Kubernetes generated files
+*.kubeconfig
+*-config.yaml.backup
+
+# AWS CLI cache
+.aws/cli/cache/
+
+# Terraform files (if used later)
+*.tfstate
+*.tfstate.backup
+.terraform/
+terraform.tfplan
+
+# Cost reports and exports
+cost-reports/
+billing-data/
