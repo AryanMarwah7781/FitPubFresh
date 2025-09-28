@@ -60,6 +60,11 @@ echo ""
 
 # Test the image locally
 echo "🧪 Testing image locally..."
+
+# Clean up any existing test container
+docker stop fitness-api-test 2>/dev/null || true
+docker rm fitness-api-test 2>/dev/null || true
+
 CONTAINER_ID=$(docker run -d -p 8001:8000 --name fitness-api-test "${REPOSITORY_NAME}:${IMAGE_TAG}")
 
 echo "Waiting for container to start..."

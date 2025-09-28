@@ -24,7 +24,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Copy requirements and install Python dependencies
 COPY requirements-production.txt /tmp/requirements-production.txt
 RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-deps -r /tmp/requirements-production.txt
+    pip install -r /tmp/requirements-production.txt
 
 # Production stage - Minimal runtime image
 FROM python:3.9-slim as production
@@ -86,6 +86,5 @@ CMD ["python", "-m", "uvicorn", "main:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
      "--workers", "1", \
-     "--worker-class", "uvicorn.workers.UvicornWorker", \
      "--access-log", \
      "--log-level", "info"]
