@@ -1,86 +1,90 @@
-# Docker Compose for Local Development
+# Docker Compose for FastAPI Application - Day 3 Container Registry
 version: '3.8'
 
 services:
   # FastAPI Application
-  fitpub-api:
+  fitness-ai-api:
     build:
       context: .
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
+      target: production
+    container_name: fitness-ai-api
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=true
+      - SECRET_KEY=dev-test-secret-key-for-jwt-tokens-docker
+      - DEBUG=false
       - ENVIRONMENT=development
-      - DATABASE_URL=postgresql://fitpub:fitpub123@postgres:5432/fitpub_db
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=dev-secret-key-change-for-production
-    volumes:
-      - ./models:/app/models
-      - ./.env:/app/.env
-    depends_on:
-      - postgres
-      - redis
+      - LOG_LEVEL=INFO
+      - HOST=0.0.0.0
+      - PORT=8000
+      - WORKERS=1
+      - MODEL_PATH=./ai_models/mistral-7b-instruct
+      - MODEL_NAME=mistralai/Mistral-7B-Instruct-v0.3
     networks:
-      - fitpub-network
+      - fitness-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs:rw
+      - ./ai_models:/app/ai_models:ro
 
-  # PostgreSQL Database
+  # PostgreSQL Database (Optional - for future use)
   postgres:
     image: postgres:15-alpine
+    container_name: fitness-postgres
     environment:
-      - POSTGRES_DB=fitpub_db
-      - POSTGRES_USER=fitpub
-      - POSTGRES_PASSWORD=fitpub123
+      POSTGRES_USER: fitness
+      POSTGRES_PASSWORD: fitness123
+      POSTGRES_DB: fitness_db
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./db_init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
-      - fitpub-network
+      - fitness-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fitness"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    profiles:
+      - database
 
-  # Redis for Caching
+  # Redis Cache (Optional - for future use)
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    container_name: fitness-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
-    networks:
-      - fitpub-network
-
-  # pgAdmin for Database Management
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@fitpub.ai
-      - PGADMIN_DEFAULT_PASSWORD=admin123
     ports:
-      - "5050:80"
-    depends_on:
-      - postgres
+      - "6379:6379"
     networks:
-      - fitpub-network
-
-  # Prometheus for Monitoring
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-    networks:
-      - fitpub-network
+      - fitness-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    profiles:
+      - cache
 
 networks:
-  fitpub-network:
+  fitness-network:
     driver: bridge
+    name: fitness-network
 
 volumes:
   postgres_data:
+    name: fitness_postgres_data
   redis_data:
+    name: fitness_redis_data
