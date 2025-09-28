@@ -1,0 +1,61 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: ai-fitness-dev
+  region: us-east-1
+  version: "1.28"
+  tags:
+    Environment: development
+    Project: ai-fitness
+    Owner: learning-project
+    CostCenter: development
+    AutoShutdown: "true"
+
+# Cost optimization: Use two AZs for availability
+availabilityZones: ["us-east-1a", "us-east-1b"]
+
+# IAM configuration
+iam:
+  withOIDC: true
+
+# Add-ons for monitoring and management
+addons:
+- name: vpc-cni
+- name: coredns
+- name: kube-proxy
+- name: aws-ebs-csi-driver
+  wellKnownPolicies:
+    ebsCSIController: true
+
+# CloudWatch logging (basic monitoring)
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["audit", "authenticator", "controllerManager"]
+
+# Managed node groups for auto-scaling
+managedNodeGroups:
+  - name: ai-fitness-workers
+    instanceTypes: ["t3.medium"]
+    spot: true # Use spot instances for cost savings
+    
+    # Scaling
+    minSize: 1
+    maxSize: 4
+    desiredCapacity: 2
+    
+    # Volume
+    volumeSize: 20
+    volumeType: gp3
+    
+    # Labels and tags
+    labels:
+      role: worker
+      environment: development
+    
+    tags:
+      Name: ai-fitness-dev-worker
+      Environment: development
+      Project: ai-fitness
+      CostCenter: development
+      AutoShutdown: "true"
