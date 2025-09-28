@@ -1,0 +1,100 @@
+# Docker ignore file for Fitness AI API
+# Excludes unnecessary files from build context for faster builds
+
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.tmp
+
+# Logs
+*.log
+logs/
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation
+README.md
+*.md
+
+# Docker
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile.dev
+
+# Kubernetes
+k8s-*.yaml
+*.yaml
+
+# Scripts
+scripts/
+
+# Testing
+test_*.py
+tests/
+.coverage
+htmlcov/
+
+# Model files (large files)
+models/
+*.bin
+*.model
+*.pkl
+*.h5
+
+# Data files
+data/
+datasets/
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# AWS
+.aws/
+
+# Kubernetes
+.kube/
+*.kubeconfig
