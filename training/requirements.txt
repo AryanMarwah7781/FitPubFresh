@@ -1,0 +1,25 @@
+# Training Data Generation Requirements
+
+# Claude API
+anthropic>=0.67.0
+
+# Data Processing
+python-dotenv==1.0.0
+pydantic>=2.7.4
+
+# Dataset Management
+datasets>=2.16.1
+huggingface-hub>=0.34.0
+
+# Utilities
+tqdm>=4.66.1
+colorama==0.4.6
+
+# PDF Processing (for research papers - Day 3)
+pypdf2==3.0.1
+pdfplumber==0.10.3
+
+# LightRAG (will install on Day 3)
+# lightrag-hku
+# networkx
+# sentence-transformers
