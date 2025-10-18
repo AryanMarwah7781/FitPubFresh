@@ -14,6 +14,7 @@ from generators.workout_generator import WorkoutGenerator
 from generators.nutrition_generator import NutritionGenerator
 from generators.form_generator import FormCorrectionGenerator
 from generators.faq_generator import FAQGenerator
+from generators.recovery_generator import RecoveryGenerator
 
 
 async def generate_all_data(
@@ -49,6 +50,7 @@ async def generate_all_data(
     nutrition_gen = NutritionGenerator(client)
     form_gen = FormCorrectionGenerator(client)
     faq_gen = FAQGenerator(client)
+    recovery_gen = RecoveryGenerator(client)
 
     all_examples = {
         "workout_programming": [],
@@ -74,8 +76,9 @@ async def generate_all_data(
     if num_faq > 0:
         all_examples["faq"] = await faq_gen.generate_examples(num_faq)
 
-    # TODO: Recovery/injury generator (similar to form corrections)
-    # For now, we'll skip this and adjust totals
+    # Generate recovery/injury examples
+    if num_recovery > 0:
+        all_examples["recovery_injury"] = await recovery_gen.generate_examples(num_recovery)
 
     return all_examples, client
 
@@ -83,19 +86,29 @@ async def generate_all_data(
 async def main():
     """Main execution function"""
 
-    # Start with smaller batch for Day 1
-    # Full dataset: 400 workout, 300 nutrition, 200 form, 300 faq, 300 recovery = 1500
-    # Day 1 target: 200 examples for testing
+    # Full dataset generation: 1500 examples total
+    # Distribution: 400 workout, 300 nutrition, 200 form, 300 faq, 300 recovery
 
-    print("\n📅 DAY 1: Initial Generation (200 examples)\n")
+    print("\n📅 FULL DATASET GENERATION (1500 examples)\n")
+    print("⏱️  Estimated time: 90-120 minutes")
+    print("💰 Estimated cost: $18-20")
+    print("\n" + "="*60 + "\n")
 
-    # Generate smaller batch for testing
+    # Confirm before starting
+    confirm = input("🚀 Ready to generate 1500 examples? This will take ~2 hours. (y/N): ").strip().lower()
+    if confirm != 'y':
+        print("\n❌ Generation cancelled. Run again when ready!")
+        return
+
+    print("\n✅ Starting full generation...\n")
+
+    # Generate full dataset
     all_examples, client = await generate_all_data(
-        num_workout=80,  # 40% of total
-        num_nutrition=50,  # 25% of total
-        num_form=30,  # 15% of total
-        num_faq=40,  # 20% of total
-        num_recovery=0  # Skip for now
+        num_workout=400,   # Workout programming
+        num_nutrition=300,  # Nutrition advice
+        num_form=200,      # Form corrections
+        num_faq=300,       # FAQ
+        num_recovery=300   # Recovery/injury
     )
 
     # Flatten all examples

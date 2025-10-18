@@ -8,11 +8,13 @@ from .workout_generator import WorkoutGenerator
 from .nutrition_generator import NutritionGenerator
 from .form_generator import FormCorrectionGenerator
 from .faq_generator import FAQGenerator
+from .recovery_generator import RecoveryGenerator
 
 __all__ = [
     'ClaudeClient',
     'WorkoutGenerator',
     'NutritionGenerator',
     'FormCorrectionGenerator',
-    'FAQGenerator'
+    'FAQGenerator',
+    'RecoveryGenerator'
 ]
